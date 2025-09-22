@@ -1,0 +1,59 @@
+.data
+prompt: .asciz "Enter day number (1-7): "
+error: .asciz "invald input! Please enter from 1 to 7.\n"
+
+#Store day names separately
+day1: .asciz "Mantaha"
+day2: .asciz "Labobeli"
+day3: .asciz "Laboraro"
+day4: .asciz "Labone"
+day5: .asciz "Labohlano"
+day6: .asciz "Moqebelo"
+day7: .asciz "Sontaha"
+
+# Create an array of addresses poinying to the day names
+days: .word day1, day2, day3, day4, day5, day6, day7
+
+newline: .asciz "\n"
+
+.text
+.globl main
+main:
+# Prompt user
+la a0, prompt
+li a7, 4
+ecall
+# Read day number
+li a7, 5
+ecall
+mv t0, a0 # t0 = day umber
+# Check if input < 1
+li t1, 1
+blt t0, t1, invalid
+# Check if input > 7
+li t1, 7
+bgt t0, t1, invalid
+# Calculate correct address from days array
+addi t0, t0, -1 # convert to 0-based index
+la t1, days # load base address of days array
+slli t0, t0, 2 # offset = index * 4 (word size)
+add t1, t1, t0 # t1 - address of day entry
+lw a0, 0(t1) # load address of correct string
+
+# Print day name
+li a7, 4
+ecall
+# Print newline
+la a0, newline
+li a7, 4
+ecall
+j exit
+
+invalid:
+la a0, error
+li a7, 4
+ecall
+
+exit:
+li a7, 10
+ecall
