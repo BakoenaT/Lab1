@@ -1,0 +1,40 @@
+.data
+prompt: .asciz "Enter quantity of grains in litres: "
+result1: .asciz "Number of makopokopo (20L): "
+result2: .asciz "\nRemaining litres: "
+
+.text
+.globl main
+main:
+#Print prompt
+la a0, prompt
+li a7, 4
+ecall
+#Read litres
+li a7, 5
+ecall
+mv t0, a0 #t0 = litres
+#Calculate makopokopo = litres/20
+li t1, 20
+div t2, t0, t1 #t2 = makopokopo
+#Calculate remaining litres = litres%20
+rem t3, t0, t1 #t3 = remainder
+#Print result1
+la a0, result1
+li a7, 4
+ecall
+#Print number of makopokopo
+mv a0, t2
+li a7, 1
+ecall
+#Print result2
+la a0, result2
+li a7, 4
+ecall
+#Print remaining litres
+mv a0, t3
+li a7, 1
+ecall
+#Exit
+li a7, 10
+ecall
